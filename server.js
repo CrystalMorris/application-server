@@ -67,7 +67,12 @@ app.put('/restaurants/:id', async (req, res)=>{
     res.send('Updated!!');
 })
 
-
+app.patch('/restaurants/:id', async (req, res)=>{
+    let update = await Restaurant.update(req.body,{
+        where : {id : req.params.id}
+    })
+    res.send('patched!')
+})
 //Q: What will our server be doing?
 app.listen(port, async () => {
     await seed()
