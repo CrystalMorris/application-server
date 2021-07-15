@@ -8,6 +8,7 @@ const {seed} = require('./seed')
 
 const app = express();
 const port = 3000;
+app.use(express.json());
 
 //Q: What does express.static help us do?
 //Q: What do you think path.join helps us do?
@@ -43,12 +44,27 @@ app.get('/restaurants/:id', async(req, res)=>{
 })
 
 app.get('/restaurants/:id/:menu', async(req, res)=>{
-    const restaurant = await Restaurant.findByPk(req.params.id, {include:{ model : Menu, include: Item}})
-  
-    
-    
-   res.json(restaurant)
-    
+    const restaurant = await Restaurant.findByPk(req.params.id, {include:{ model : Menu, include: Item}})    
+    res.json(restaurant)
+    })
+
+app.post('/restaurants', async (req, res)=> {
+    let newRestaurant = await Restaurant.create(req.body);
+    res.send('Created!')
+})    
+
+app.delete('/restaurants/:id',async (req, res)=>{
+    await Restaurant.destroy({
+        where : {id : req.params.id}
+    })
+    res.send("Deleted!!")
+})
+
+app.put('/restaurants/:id', async (req, res)=>{
+    let updated = await Restaurant.update(req.body, {
+        where : {id : req.params.id}
+    })
+    res.send('Updated!!');
 })
 
 
