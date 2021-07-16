@@ -4,6 +4,7 @@ const {Menu, Item} = require('./models/index');
 const {Restaurant} = require('./models/Restaurant')
 const {sequelize} = require('./db')
 const {seed} = require('./seed')
+const { body,check, validationResult } = require('express-validator');
 
 
 const app = express();
@@ -48,8 +49,13 @@ app.get('/restaurants/:id/:menu', async(req, res)=>{
     res.json(restaurant)
     })
 
-app.post('/restaurants', async (req, res)=> {
-    let newRestaurant = await Restaurant.create(req.body);
+app.post('/restaurants',
+    body('name').isLength({min:3, max: 50}),body('name').isAlphanumeric(),body("image").isURL(), async (req, res)=> {
+        const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+    await Restaurant.create(req.body);
     res.send('Created!')
 })    
 
@@ -61,14 +67,14 @@ app.delete('/restaurants/:id',async (req, res)=>{
 })
 
 app.put('/restaurants/:id', async (req, res)=>{
-    let updated = await Restaurant.update(req.body, {
+    await Restaurant.update(req.body, {
         where : {id : req.params.id}
     })
     res.send('Updated!!');
 })
 
 app.patch('/restaurants/:id', async (req, res)=>{
-    let update = await Restaurant.update(req.body,{
+    await Restaurant.update(req.body,{
         where : {id : req.params.id}
     })
     res.send('patched!')

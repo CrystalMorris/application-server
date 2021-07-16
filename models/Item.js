@@ -4,8 +4,7 @@ const { DataTypes, Model } = require('sequelize');
 class Item extends Model {}
 
 Item.init({
-  name: DataTypes.STRING,
-  image: DataTypes.STRING,
+  name: DataTypes.STRING,  
   price: DataTypes.DECIMAL(5,2),
   vegetarian: DataTypes.BOOLEAN
 }, {
